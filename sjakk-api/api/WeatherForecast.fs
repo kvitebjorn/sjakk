@@ -1,4 +1,4 @@
-namespace sjakk_api
+namespace api
 
 open System
 

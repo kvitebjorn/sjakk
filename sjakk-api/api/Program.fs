@@ -1,4 +1,4 @@
-namespace sjakk_api
+namespace api
 #nowarn "20"
 open System
 open System.Collections.Generic
