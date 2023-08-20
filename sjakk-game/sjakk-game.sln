@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "board", "board\board.fsproj", "{BC2F022A-8219-445E-8D18-BC411D1B8231}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "board.tests", "board.tests\board.tests.fsproj", "{230E9328-5A5C-4CA9-8CDB-647905C38D89}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "board-tests", "board-tests\board-tests.fsproj", "{230E9328-5A5C-4CA9-8CDB-647905C38D89}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
