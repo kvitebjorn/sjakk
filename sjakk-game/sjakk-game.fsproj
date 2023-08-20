@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Board.fs" />
+    <Compile Include="src/Board.fs" />
   </ItemGroup>
 
 </Project>
