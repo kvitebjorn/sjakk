@@ -1,6 +1,7 @@
 module board_tests.bitboard.Board
 
 open NUnit.Framework
+open board.bitboard
 
 [<SetUp>]
 let Setup () =

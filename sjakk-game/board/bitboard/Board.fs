@@ -1,4 +1,4 @@
-namespace board.bitboard.BitBoard
+namespace board.bitboard
 
 module Board =
     let hello name =
