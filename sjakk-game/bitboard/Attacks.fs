@@ -1,5 +1,5 @@
-﻿namespace sjakk_game
+namespace sjakk_game.BitBoard
 
-module Say =
+module Attacks =
     let hello name =
         printfn "Hello %s" name
