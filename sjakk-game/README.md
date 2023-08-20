@@ -1,0 +1,1 @@
+Use `dotnet build` to build the solution.
