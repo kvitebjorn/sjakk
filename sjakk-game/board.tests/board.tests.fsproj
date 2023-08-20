@@ -8,7 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="UnitTest1.fs" />
+    <Compile Include=".\bitboard\Attacks.fs" />
+    <Compile Include=".\bitboard\BitBoard.fs" />
+    <Compile Include=".\bitboard\Board.fs" />
+    <Compile Include="Board.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

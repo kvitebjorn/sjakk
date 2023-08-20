@@ -1,4 +1,4 @@
-namespace sjakk_game.BitBoard
+namespace board.bitboard.BitBoard
 
 module Attacks =
     let hello name =

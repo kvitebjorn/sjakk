@@ -1,4 +1,4 @@
-module board.tests
+module board_tests.Board
 
 open NUnit.Framework
 

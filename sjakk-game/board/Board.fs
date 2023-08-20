@@ -1,4 +1,4 @@
-﻿namespace sjakk_game
+﻿namespace board
 
 module Board =
     let hello name =

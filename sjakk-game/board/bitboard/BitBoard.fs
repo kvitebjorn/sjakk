@@ -1,4 +1,4 @@
-namespace sjakk_game.BitBoard
+namespace board.bitboard.BitBoard
 
 module BitBoard =
     let hello name =
