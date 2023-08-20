@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "mZrA3OWzDqmczl4x+Og3fNHXCb8OPFnS6Tsoh31rwh1VqZm6XSPkRtjVyhyIQB4YsntBN6B1H3+Szr/14AdPWw==",
+  "success": true,
+  "projectFilePath": "/home/kyle/dev/git/kvitebjorn/sjakk/sjakk-game/sjakk-game.fsproj",
+  "expectedPackageFiles": [
+    "/home/kyle/.nuget/packages/fsharp.core/7.0.0/fsharp.core.7.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
