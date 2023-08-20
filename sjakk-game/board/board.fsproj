@@ -2,12 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
-    <RootNamespace>sjakk_game</RootNamespace>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="src/Board.fs" />
+    <Compile Include="Board.fs" />
   </ItemGroup>
 
 </Project>
