@@ -15,6 +15,7 @@ open Microsoft.Extensions.Hosting
 open Microsoft.Extensions.Logging
 
 module Program =
+    open Microsoft.AspNetCore.Http
     let exitCode = 0
 
     [<EntryPoint>]
