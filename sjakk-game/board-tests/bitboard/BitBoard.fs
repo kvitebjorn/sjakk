@@ -1,12 +1,13 @@
 module board_tests.bitboard.BitBoard
 
 open NUnit.Framework
-open board.bitboard
+open board.bitboard.BitBoard
 
 [<SetUp>]
 let Setup () =
     ()
 
 [<Test>]
-let Test2 () =
-    Assert.True(true)
+let CreateEmptyBitBoard () =
+    let emptyBitBoard = new BitBoard()
+    Assert.NotNull(emptyBitBoard)
