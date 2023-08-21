@@ -3,17 +3,11 @@ namespace board.bitboard
 // https://www.chessprogramming.org/Bitboard_Board-Definition
 module BitBoard =
     type BitBoard() =
-        let whitePawns   : uint64 = 0UL
-        let whiteKnights : uint64 = 0UL
-        let whiteBishops : uint64 = 0UL
-        let whiteRooks   : uint64 = 0UL
-        let whiteQueens  : uint64 = 0UL
-        let whiteKing    : uint64 = 0UL
+        let empty : int64 = 0L
+        let all   : int64 = -1L
 
-        let blackPawns   : uint64 = 0UL
-        let blackKnights : uint64 = 0UL
-        let blackBishops : uint64 = 0UL
-        let blackRooks   : uint64 = 0UL
-        let blackQueens  : uint64 = 0UL
-        let blackKing    : uint64 = 0UL
+        let firstRank : int64 = 0xffL
+        let lastRank  : int64 = 0xffL <<< 56
+        let lightSquares : int64 = 0x55aa55aa55aa55aaL
+        let darkSquares  : int64 = 0xaa55aa55aa55aa55L
 
