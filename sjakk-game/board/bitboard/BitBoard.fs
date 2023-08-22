@@ -1,8 +1,6 @@
 namespace board.bitboard
 
-(**********************************\
- ==================================
- 
+(*
             Chess board
 
                             WHITE PIECES
@@ -164,4 +162,3 @@ module BitBoard =
       let occupancies : BitBoardType array = Array.zeroCreate 3
       let playerToMove = -1
       let enpassant = BoardSquares.no_sq
-      
