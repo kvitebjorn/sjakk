@@ -6,9 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include=".\bitboard\Attacks.fs" />
     <Compile Include=".\bitboard\BitBoard.fs" />
-    <Compile Include=".\bitboard\Board.fs" />
     <Compile Include="Board.fs" />
   </ItemGroup>
 

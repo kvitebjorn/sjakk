@@ -83,12 +83,20 @@ namespace board.bitboard
 
 // https://www.chessprogramming.org/Bitboard_Board-Definition
 module BitBoard =
-   type BitBoardType = uint64
+   type System.UInt64 with
+      member x.get i = x &&& (1UL <<< i) <> 0UL 
+      member x.set i = x ||| (1UL <<< i)
+      member x.pop i = x &&& ~~~(1UL <<< i)
+      member x.count = // count bits set to 1
+         let rec go b acc = if b = 0UL then acc else go (b &&& (b-1UL)) (acc+1UL)
+         go x 0UL
+
+   type BitBoardType = System.UInt64
 
    type Color =
-   | White = 0
-   | Black = 1
-   | Both  = 2
+   | white = 0
+   | black = 1
+   | both  = 2
 
    type BoardSquares = 
       | a8 = 0
@@ -157,8 +165,99 @@ module BitBoard =
       | h1 = 63 
       | no_sq = 64
 
+   (* castling rights binary encoding
+
+      bin  dec
+      
+      0001    1  white king can castle to the kingside
+      0010    2  white king can castle to the queenside
+      0100    4  black king can castle to the kingside
+      1000    8  black king can castle to the queen ide
+
+      examples
+
+      1111       both sides an castle both directions
+      1001       black king => queenside
+                 white king => kingside
+   *)
+   type CastlingRights =
+      | whiteKingside  = 1
+      | whiteQueenside = 2
+      | blackKingside  = 4
+      | blackQueenside = 8
+
+   // capitalized = White
+   // lowercase = Black
+   type Pieces =
+      | P = 0
+      | N = 1
+      | B = 2
+      | R = 3
+      | Q = 4
+      | K = 5
+      | p = 6
+      | n = 7
+      | b = 8
+      | r = 9
+      | q = 10
+      | k = 11
+
+   let AsciiPieces =
+      [|
+         'P'
+         'N'
+         'B'
+         'R'
+         'Q'
+         'K'
+         'p'
+         'n'
+         'b'
+         'r'
+         'q'
+         'k'
+      |]
+
+   let UnicodePieces =
+      [|
+         "♙"
+         "♘"
+         "♗"
+         "♖"
+         "♕"
+         "♔"
+         "♟︎"
+         "♞"
+         "♝"
+         "♜"
+         "♛"
+         "♚"
+      |]
+
+   let AsciiToEncodedPieces =
+      [
+         'P', Pieces.P
+         'N', Pieces.N
+         'B', Pieces.B
+         'R', Pieces.R
+         'Q', Pieces.Q
+         'K', Pieces.K
+         'p', Pieces.p
+         'n', Pieces.n
+         'b', Pieces.b
+         'r', Pieces.r
+         'q', Pieces.q
+         'k', Pieces.k
+      ]
+      |> Map.ofList
+
+   type Sliders =
+      | rook    = 0
+      | bishop  = 1
+
    type BitBoard() =
-      let bitboards   : BitBoardType array = Array.zeroCreate 12
-      let occupancies : BitBoardType array = Array.zeroCreate 3
-      let playerToMove = -1
-      let enpassant = BoardSquares.no_sq
+      member val bitboards   : BitBoardType array = Array.zeroCreate 12
+      member val occupancies : BitBoardType array = Array.zeroCreate 3
+      member val playerToMove = -1
+      member val enpassant = BoardSquares.no_sq
+      member val castle = 0
