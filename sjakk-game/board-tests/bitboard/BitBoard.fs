@@ -151,9 +151,7 @@ let PrintEmptyBitboard() =
 let SetPawnOnE2 () =
     let bitBoard = new BitBoard()
 
-    // TODO: figure out a better indexing strat, probably move to member function
-    bitBoard.bitboards[LanguagePrimitives.EnumToValue(Pieces.P)] <-
-     bitBoard.bitboards[LanguagePrimitives.EnumToValue(Pieces.P)].set(
-        LanguagePrimitives.EnumToValue(BoardSquares.e2))
-    Assert.NotZero(bitBoard.bitboards[LanguagePrimitives.EnumToValue(Pieces.P)])
-    BitBoard.printBitboard(bitBoard.bitboards[LanguagePrimitives.EnumToValue(Pieces.P)])
+    bitBoard.bitboards[int Pieces.P] <-
+     bitBoard.bitboards[int Pieces.P].set(int BoardSquares.e2)
+    Assert.NotZero(bitBoard.bitboards[int Pieces.P])
+    BitBoard.printBitboard(bitBoard.bitboards[int Pieces.P])
