@@ -143,6 +143,11 @@ let CountBits () =
     Assert.AreEqual(4, fifteen.count)
 
 [<Test>]
+let PrintEmptyBitboard() =
+    let bitBoard = new BitBoard()
+    BitBoard.printBitboard(bitBoard.bitboards[0])
+
+[<Test>]
 let SetPawnOnE2 () =
     let bitBoard = new BitBoard()
 
@@ -151,3 +156,4 @@ let SetPawnOnE2 () =
      bitBoard.bitboards[LanguagePrimitives.EnumToValue(Pieces.P)].set(
         LanguagePrimitives.EnumToValue(BoardSquares.e2))
     Assert.NotZero(bitBoard.bitboards[LanguagePrimitives.EnumToValue(Pieces.P)])
+    BitBoard.printBitboard(bitBoard.bitboards[LanguagePrimitives.EnumToValue(Pieces.P)])

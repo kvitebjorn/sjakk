@@ -262,9 +262,32 @@ module BitBoard =
       | rook    = 0
       | bishop  = 1
 
+   // Board with capital B, referring to the whole of the chess Board,
+   // which is the aggregate of 12 bitboard slices as shown above
    type BitBoard() =
       member val bitboards   : BitBoardType array = Array.zeroCreate 12
       member val occupancies : BitBoardType array = Array.zeroCreate 3
       member val playerToMove = -1
       member val enpassant = BoardSquares.no_sq
       member val castle = 0
+
+      // TODO obviously can use some functional refactoring
+      //      just want to get everything working naievely first according to the wiki
+      static member printBitboard(bitboard : BitBoardType) =
+         for rank = 0 to 7 do
+            for file = 0 to 7 do
+               let squareIndex = rank * 8 + file
+
+               // print ranks
+               if file = 0 then
+                  printf "  %i " (8 - rank)
+
+               // print the bit state
+               printf " %i" (if bitboard.get(squareIndex) then 1 else 0)
+            printf "\n"
+
+         // print board files
+         printf "\n     a b c d e f g h\n\n"
+         
+         // print bitboard as unsigned decimal number
+         printf "     Bitboard: %i\n\n" bitboard
