@@ -84,10 +84,17 @@ namespace board.bitboard
 // https://www.chessprogramming.org/Bitboard_Board-Definition
 module BitBoard =
    type System.UInt64 with
-      member x.get i = x &&& (1UL <<< i) <> 0UL 
+      // get bit at idx i
+      member x.get i = x &&& (1UL <<< i) <> 0UL
+ 
+      // from 0 to 1 at idx i
       member x.set i = x ||| (1UL <<< i)
+
+      // from 1 to 0 at idx i
       member x.pop i = x &&& ~~~(1UL <<< i)
-      member x.count = // count bits set to 1
+
+      // count bits set to 1
+      member x.count =
          let rec go b acc = if b = 0UL then acc else go (b &&& (b-1UL)) (acc+1UL)
          go x 0UL
 
