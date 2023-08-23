@@ -50,6 +50,36 @@ let GetBit () =
     Assert.IsTrue(eight.get(3))
 
 [<Test>]
+let SetBit () =
+    // 0001
+    let one : System.UInt64 = 0UL.set(0)
+    Assert.IsTrue(one.get(0))
+    Assert.IsFalse(one.get(1))
+    Assert.IsFalse(one.get(2))
+    Assert.IsFalse(one.get(3))
+
+    // 0010
+    let two : System.UInt64 = 0UL.set(1)
+    Assert.IsFalse(two.get(0))
+    Assert.IsTrue(two.get(1))
+    Assert.IsFalse(two.get(2))
+    Assert.IsFalse(two.get(3))
+
+    // 0100
+    let four : System.UInt64 = 0UL.set(2)
+    Assert.IsFalse(four.get(0))
+    Assert.IsFalse(four.get(1))
+    Assert.IsTrue(four.get(2))
+    Assert.IsFalse(four.get(3))
+
+    // 1000
+    let eight : System.UInt64 = 0UL.set(3)
+    Assert.IsFalse(eight.get(0))
+    Assert.IsFalse(eight.get(1))
+    Assert.IsFalse(eight.get(2))
+    Assert.IsTrue(eight.get(3))
+
+[<Test>]
 let SetPawnOnE2 () =
     let bitBoard = new BitBoard()
 
