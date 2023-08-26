@@ -264,4 +264,10 @@ module BitBoard =
          attacks
 
       // pawn attacks table [player color][square]
-      member x.pawnAttacks : BitBoardType[,] = Array2D.zeroCreate 2 64
+      member x.pawnAttacks : BitBoardType[,] = 
+         let mutable pawnAttacks = Array2D.zeroCreate 2 64
+         for square = 0 to 63 do
+            pawnAttacks[int PlayerColor.white, square] <- BitBoard.maskPawnAttacks(PlayerColor.white, enum<BoardSquare> square)
+            pawnAttacks[int PlayerColor.black, square] <- BitBoard.maskPawnAttacks(PlayerColor.black, enum<BoardSquare> square)
+         pawnAttacks
+      

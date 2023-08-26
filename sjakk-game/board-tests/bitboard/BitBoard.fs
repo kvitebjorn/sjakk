@@ -183,3 +183,13 @@ let GenerateHFilePawnAttacksWhite () =
 let GenerateHFilePawnAttacksBlack () =
     let pawnAttacks = BitBoard.maskPawnAttacks(PlayerColor.black, BoardSquare.h7)
     Assert.AreEqual(4194304UL, pawnAttacks)
+
+[<Test>]
+let GenerateAllPawnAttacksWhite () =
+    let bitBoard = new BitBoard()
+    Assert.AreEqual(70368744177664UL, bitBoard.pawnAttacks[int PlayerColor.white, int BoardSquare.h2])
+
+[<Test>]
+let GenerateAllPawnAttacksBlack () =
+    let bitBoard = new BitBoard()
+    Assert.AreEqual(4194304UL, bitBoard.pawnAttacks[int PlayerColor.black, int BoardSquare.h7])
