@@ -145,13 +145,41 @@ let CountBits () =
 [<Test>]
 let PrintEmptyBitboard() =
     let bitBoard = new BitBoard()
-    BitBoard.printBitboard(bitBoard.bitboards[0])
+    Assert.AreEqual(0UL, bitBoard.bitboards[int Pieces.P])
 
 [<Test>]
 let SetPawnOnE2 () =
     let bitBoard = new BitBoard()
-
     bitBoard.bitboards[int Pieces.P] <-
-     bitBoard.bitboards[int Pieces.P].set(int BoardSquares.e2)
-    Assert.NotZero(bitBoard.bitboards[int Pieces.P])
-    BitBoard.printBitboard(bitBoard.bitboards[int Pieces.P])
+     bitBoard.bitboards[int Pieces.P].set(int BoardSquare.e2)
+    Assert.AreEqual(4503599627370496UL, bitBoard.bitboards[int Pieces.P])
+
+[<Test>]
+let GenerateMidBoardPawnAttacksWhite () =
+    let pawnAttacks = BitBoard.maskPawnAttacks(PlayerColor.white, BoardSquare.e4)
+    Assert.AreEqual(671088640UL, pawnAttacks)
+
+[<Test>]
+let GenerateMidBoardPawnAttacksBlack () =
+    let pawnAttacks = BitBoard.maskPawnAttacks(PlayerColor.black, BoardSquare.e5)
+    Assert.AreEqual(171798691840UL, pawnAttacks)
+
+[<Test>]
+let GenerateAFilePawnAttacksWhite () =
+    let pawnAttacks = BitBoard.maskPawnAttacks(PlayerColor.white, BoardSquare.a2)
+    Assert.AreEqual(2199023255552UL, pawnAttacks)
+
+[<Test>]
+let GenerateAFilePawnAttacksBlack () =
+    let pawnAttacks = BitBoard.maskPawnAttacks(PlayerColor.black, BoardSquare.a7)
+    Assert.AreEqual(131072UL, pawnAttacks)
+
+[<Test>]
+let GenerateHFilePawnAttacksWhite () =
+    let pawnAttacks = BitBoard.maskPawnAttacks(PlayerColor.white, BoardSquare.h2)
+    Assert.AreEqual(70368744177664UL, pawnAttacks)
+
+[<Test>]
+let GenerateHFilePawnAttacksBlack () =
+    let pawnAttacks = BitBoard.maskPawnAttacks(PlayerColor.black, BoardSquare.h7)
+    Assert.AreEqual(4194304UL, pawnAttacks)
