@@ -193,3 +193,18 @@ let GenerateAllPawnAttacksWhite () =
 let GenerateAllPawnAttacksBlack () =
     let bitBoard = new BitBoard()
     Assert.AreEqual(4194304UL, bitBoard.pawnAttacks[int PlayerColor.black, int BoardSquare.h7])
+
+[<Test>]
+let GenerateMidBoardKnightAttacks () =
+    let knightAttacks = BitBoard.maskKnightAttacks(PlayerColor.white, BoardSquare.f3)
+    Assert.AreEqual(5802888705324613632UL, knightAttacks)
+
+[<Test>]
+let GenerateEdgeBoardKnightAttacks () =
+    let knightAttacks = BitBoard.maskKnightAttacks(PlayerColor.white, BoardSquare.h6)
+    Assert.AreEqual(275414786112L, knightAttacks)
+
+[<Test>]
+let GenerateCornerBoardKnightAttacks () =
+    let knightAttacks = BitBoard.maskKnightAttacks(PlayerColor.white, BoardSquare.a1)
+    Assert.AreEqual(1128098930098176L, knightAttacks)

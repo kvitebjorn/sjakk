@@ -263,6 +263,7 @@ module BitBoard =
 
          attacks
 
+      // TODO: move all these piece init into one init function under one for loop
       // pawn attacks table [player color][square]
       member x.pawnAttacks : BitBoardType[,] = 
          let mutable pawnAttacks = Array2D.zeroCreate 2 64
@@ -270,4 +271,37 @@ module BitBoard =
             pawnAttacks[int PlayerColor.white, square] <- BitBoard.maskPawnAttacks(PlayerColor.white, enum<BoardSquare> square)
             pawnAttacks[int PlayerColor.black, square] <- BitBoard.maskPawnAttacks(PlayerColor.black, enum<BoardSquare> square)
          pawnAttacks
-      
+
+      // generate knight attacks
+      static member maskKnightAttacks(player : PlayerColor, square : BoardSquare) : BitBoardType =
+         // result attacks bitboard
+         let mutable attacks : BitBoardType = 0UL
+
+         // set piece on the bitboard
+         let bitboard : BitBoardType = 0UL.set(int square)
+
+         if ((bitboard >>> 17) &&& NOT_H_FILE) <> 0UL then 
+            attacks <- attacks ||| (bitboard >>> 17)
+         if ((bitboard >>> 15) &&& NOT_A_FILE) <> 0UL then 
+            attacks <- attacks ||| (bitboard >>> 15)
+         if ((bitboard >>> 10) &&& NOT_H_OR_G_FILE) <> 0UL then 
+            attacks <- attacks ||| (bitboard >>> 10)
+         if ((bitboard >>> 6) &&& NOT_A_OR_B_FILE) <> 0UL then 
+            attacks <- attacks ||| (bitboard >>> 6)
+         if ((bitboard <<< 17) &&& NOT_A_FILE) <> 0UL then 
+            attacks <- attacks ||| (bitboard <<< 17)
+         if ((bitboard <<< 15) &&& NOT_H_FILE) <> 0UL then 
+            attacks <- attacks ||| (bitboard <<< 15)
+         if ((bitboard <<< 10) &&& NOT_A_OR_B_FILE) <> 0UL then 
+            attacks <- attacks ||| (bitboard <<< 10)
+         if ((bitboard <<< 6) &&& NOT_H_OR_G_FILE) <> 0UL then 
+            attacks <- attacks ||| (bitboard <<< 6)
+         attacks
+
+      // knight attacks table [player color][square]
+      member x.knightAttacks : BitBoardType[,] = 
+         let mutable knightAttacks = Array2D.zeroCreate 2 64
+         for square = 0 to 63 do
+            knightAttacks[int PlayerColor.white, square] <- BitBoard.maskKnightAttacks(PlayerColor.white, enum<BoardSquare> square)
+            knightAttacks[int PlayerColor.black, square] <- BitBoard.maskKnightAttacks(PlayerColor.black, enum<BoardSquare> square)
+         knightAttacks
