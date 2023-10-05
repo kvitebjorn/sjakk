@@ -101,6 +101,10 @@ module BitBoard =
          let rec go b acc = if b = 0UL then acc else go (b &&& (b-1UL)) (acc+1UL)
          go x 0UL
 
+      member x.getLeastSignificantBitIndex = 
+         if x = 0UL then -1 else 
+         System.Numerics.BitOperations.TrailingZeroCount(x)
+
    type BitBoardType = System.UInt64
 
    type PlayerColor =
@@ -130,7 +134,7 @@ module BitBoard =
 
       examples
 
-      1111       both sides an castle both directions
+      1111       both sides can castle both directions
       1001       black king => queenside
                  white king => kingside
    *)
@@ -223,6 +227,8 @@ module BitBoard =
       member val enpassant = BoardSquare.no_sq
       member val castle = 0
 
+      static member indexToCoordinate idx = enum<BoardSquare> idx
+
       static member printBitboard(bitboard : BitBoardType) =
          for rank = 0 to 7 do
             for file = 0 to 7 do
@@ -233,7 +239,7 @@ module BitBoard =
                   printf "  %i " (8 - rank)
 
                // print the bit state
-               printf " %i" (if bitboard.get(squareIndex) then 1 else 0)
+               printf " %s" (if bitboard.get(squareIndex) then "1" else ".")
             printf "\n"
 
          // print board files
@@ -273,7 +279,7 @@ module BitBoard =
          pawnAttacks
 
       // generate knight attacks
-      static member maskKnightAttacks(player : PlayerColor, square : BoardSquare) : BitBoardType =
+      static member maskKnightAttacks(square : BoardSquare) : BitBoardType =
          // result attacks bitboard
          let mutable attacks : BitBoardType = 0UL
 
@@ -298,10 +304,212 @@ module BitBoard =
             attacks <- attacks ||| (bitboard <<< 6)
          attacks
 
-      // knight attacks table [player color][square]
-      member x.knightAttacks : BitBoardType[,] = 
-         let mutable knightAttacks = Array2D.zeroCreate 2 64
+      // knight attacks table [square]
+      member x.knightAttacks : BitBoardType[] = 
+         let mutable knightAttacks = Array.zeroCreate 64
          for square = 0 to 63 do
-            knightAttacks[int PlayerColor.white, square] <- BitBoard.maskKnightAttacks(PlayerColor.white, enum<BoardSquare> square)
-            knightAttacks[int PlayerColor.black, square] <- BitBoard.maskKnightAttacks(PlayerColor.black, enum<BoardSquare> square)
+            knightAttacks[square] <- BitBoard.maskKnightAttacks(enum<BoardSquare> square)
          knightAttacks
+
+      // generate king attacks
+      static member maskKingAttacks(square : BoardSquare) : BitBoardType =
+         // result attacks bitboard
+         let mutable attacks : BitBoardType = 0UL
+
+         // set piece on the bitboard
+         let bitboard : BitBoardType = 0UL.set(int square)
+         
+         if (bitboard >>> 8) <> 0UL then 
+            attacks <- attacks ||| (bitboard >>> 8)
+         if ((bitboard >>> 9) &&& NOT_H_FILE) <> 0UL then 
+            attacks <- attacks ||| (bitboard >>> 9)
+         if ((bitboard >>> 7) &&& NOT_A_FILE) <> 0UL then 
+            attacks <- attacks ||| (bitboard >>> 7)
+         if ((bitboard >>> 1) &&& NOT_H_FILE) <> 0UL then 
+            attacks <- attacks ||| (bitboard >>> 1)
+
+         if (bitboard <<< 8) <> 0UL then 
+            attacks <- attacks ||| (bitboard <<< 8)
+         if ((bitboard <<< 9) &&& NOT_A_FILE) <> 0UL then 
+            attacks <- attacks ||| (bitboard <<< 9)
+         if ((bitboard <<< 7) &&& NOT_H_FILE) <> 0UL then 
+            attacks <- attacks ||| (bitboard <<< 7)
+         if ((bitboard <<< 1) &&& NOT_A_FILE) <> 0UL then 
+            attacks <- attacks ||| (bitboard <<< 1)
+         attacks
+
+      // king attacks table [square]
+      member x.kingAttacks : BitBoardType[] = 
+         let mutable kingAttacks = Array.zeroCreate 64
+         for square = 0 to 63 do
+            kingAttacks[square] <- BitBoard.maskKingAttacks(enum<BoardSquare> square)
+         kingAttacks
+
+      // generate bishop attacks
+      static member maskBishopAttacks(square : BoardSquare) : BitBoardType =
+         // result attacks bitboard
+         let mutable attacks : BitBoardType = 0UL
+
+         // set piece on the bitboard
+         let bitboard : BitBoardType = 0UL.set(int square)
+
+         let targetRank = (int square) / 8
+         let targetFile = (int square) % 8
+
+         let rightUpRanks = [|for i in (targetRank + 1) .. 6 -> i|]
+         let rightUpFiles = [|for i in (targetFile + 1) .. 6 -> i|]
+         let rightUpSize = if rightUpRanks.Length < rightUpFiles.Length then rightUpRanks.Length else rightUpFiles.Length
+         let rightUp = [|for i in 0 .. (rightUpSize - 1) -> (rightUpRanks[i], rightUpFiles[i])|]
+         for (r, f) in rightUp do
+            attacks <- attacks ||| (1UL <<< (r * 8 + f))
+
+         let rightDownRanks = [|for i in (targetRank - 1) .. -1 .. 1 -> i|]
+         let rightDownFiles = [|for i in (targetFile + 1) .. 6 -> i|]
+         let rightDownSize = if rightDownRanks.Length < rightDownFiles.Length then rightDownRanks.Length else rightDownFiles.Length
+         let rightDown = [|for i in 0 .. (rightDownSize - 1) -> (rightDownRanks[i], rightDownFiles[i])|]
+         for (r, f) in rightDown do
+            attacks <- attacks ||| (1UL <<< (r * 8 + f))
+
+         let leftUpRanks = [|for i in (targetRank + 1) .. 6 -> i|]
+         let leftUpFiles = [|for i in (targetFile - 1) .. -1 .. 1 -> i|]
+         let leftUpSize = if leftUpRanks.Length < leftUpFiles.Length then leftUpRanks.Length else leftUpFiles.Length
+         let leftUp = [|for i in 0 .. (leftUpSize - 1) -> (leftUpRanks[i], leftUpFiles[i])|]
+         for (r, f) in leftUp do
+            attacks <- attacks ||| (1UL <<< (r * 8 + f))
+
+         let leftDownRanks = [|for i in (targetRank - 1) .. -1 .. 1 -> i|]
+         let leftDownFiles = [|for i in (targetFile - 1) .. -1 .. 1 -> i|]
+         let leftDownSize = if leftDownRanks.Length < leftDownFiles.Length then leftDownRanks.Length else leftDownFiles.Length
+         let leftDown = [|for i in 0 .. (leftDownSize - 1) -> (leftDownRanks[i], leftDownFiles[i])|]
+         for (r, f) in leftDown do
+            attacks <- attacks ||| (1UL <<< (r * 8 + f))
+
+         attacks
+
+      // generate bishop attacks on the fly, accounting for blocking pieces
+      static member bishopAttacksOnTheFly(square : BoardSquare, blockers : BitBoardType) : BitBoardType =
+         // result attacks bitboard
+         let mutable attacks : BitBoardType = 0UL
+
+         // set piece on the bitboard
+         let bitboard : BitBoardType = 0UL.set(int square)
+
+         let targetRank = (int square) / 8
+         let targetFile = (int square) % 8
+
+         let rightUpRanks = [|for i in (targetRank + 1) .. 7 -> i|]
+         let rightUpFiles = [|for i in (targetFile + 1) .. 7 -> i|]
+         let rightUpSize = if rightUpRanks.Length < rightUpFiles.Length then rightUpRanks.Length else rightUpFiles.Length
+         let rightUp = [|for i in 0 .. (rightUpSize - 1) -> (rightUpRanks[i], rightUpFiles[i])|]
+         let rec rightUpMoves i blocked =
+            if not blocked then
+               let (r, f) = rightUp[i]
+               attacks <- attacks ||| (1UL <<< (r * 8 + f))
+               rightUpMoves (i + 1) (((1UL <<< (r * 8 + f)) &&& blockers) <> 0UL)
+         rightUpMoves 0 false
+
+         let rightDownRanks = [|for i in (targetRank - 1) .. -1 .. 0 -> i|]
+         let rightDownFiles = [|for i in (targetFile + 1) .. 7 -> i|]
+         let rightDownSize = if rightDownRanks.Length < rightDownFiles.Length then rightDownRanks.Length else rightDownFiles.Length
+         let rightDown = [|for i in 0 .. (rightDownSize - 1) -> (rightDownRanks[i], rightDownFiles[i])|]
+         let rec rightDownMoves i blocked =
+            if not blocked then
+               let (r, f) = rightDown[i]
+               attacks <- attacks ||| (1UL <<< (r * 8 + f))
+               rightDownMoves (i + 1) (((1UL <<< (r * 8 + f)) &&& blockers) <> 0UL)
+         rightDownMoves 0 false
+
+         let leftUpRanks = [|for i in (targetRank + 1) .. 7 -> i|]
+         let leftUpFiles = [|for i in (targetFile - 1) .. -1 .. 0 -> i|]
+         let leftUpSize = if leftUpRanks.Length < leftUpFiles.Length then leftUpRanks.Length else leftUpFiles.Length
+         let leftUp = [|for i in 0 .. (leftUpSize - 1) -> (leftUpRanks[i], leftUpFiles[i])|]
+         let rec leftUpMoves i blocked =
+            if not blocked then
+               let (r, f) = leftUp[i]
+               attacks <- attacks ||| (1UL <<< (r * 8 + f))
+               leftUpMoves (i + 1) (((1UL <<< (r * 8 + f)) &&& blockers) <> 0UL)
+         leftUpMoves 0 false
+
+         let leftDownRanks = [|for i in (targetRank - 1) .. -1 .. 0 -> i|]
+         let leftDownFiles = [|for i in (targetFile - 1) .. -1 .. 0 -> i|]
+         let leftDownSize = if leftDownRanks.Length < leftDownFiles.Length then leftDownRanks.Length else leftDownFiles.Length
+         let leftDown = [|for i in 0 .. (leftDownSize - 1) -> (leftDownRanks[i], leftDownFiles[i])|]
+         let rec leftDownMoves i blocked =
+            if not blocked then
+               let (r, f) = leftDown[i]
+               attacks <- attacks ||| (1UL <<< (r * 8 + f))
+               leftDownMoves (i + 1) (((1UL <<< (r * 8 + f)) &&& blockers) <> 0UL)
+         leftDownMoves 0 false
+
+         attacks
+
+      // bishop attacks table [square]
+      member x.bishopAttacks : BitBoardType[] = 
+         let mutable bishopAttacks = Array.zeroCreate 64
+         for square = 0 to 63 do
+            bishopAttacks[square] <- BitBoard.maskBishopAttacks(enum<BoardSquare> square)
+         bishopAttacks
+
+      // generate rook attacks
+      static member maskRookAttacks(square : BoardSquare) : BitBoardType =
+         // result attacks bitboard
+         let mutable attacks : BitBoardType = 0UL
+
+         // set piece on the bitboard
+         let bitboard : BitBoardType = 0UL.set(int square)
+
+         let targetRank = (int square) / 8
+         let targetFile = (int square) % 8
+
+         for r = targetRank + 1 to 6 do
+            attacks <- attacks ||| (1UL <<< (r * 8 + targetFile))
+         for r = targetRank - 1 downto 1 do
+            attacks <- attacks ||| (1UL <<< (r * 8 + targetFile))
+         for f = targetFile + 1 to 6 do
+            attacks <- attacks ||| (1UL <<< (targetRank * 8 + f))
+         for f = targetFile - 1 downto 1 do
+            attacks <- attacks ||| (1UL <<< (targetRank * 8 + f))
+         attacks
+
+      // generate rook attacks on the fly, accounting for blocking pieces
+      static member rookAttacksOnTheFly(square : BoardSquare, blockers : BitBoardType) : BitBoardType =
+         // result attacks bitboard
+         let mutable attacks : BitBoardType = 0UL
+
+         // set piece on the bitboard
+         let bitboard : BitBoardType = 0UL.set(int square)
+
+         let targetRank = (int square) / 8
+         let targetFile = (int square) % 8
+
+         let rec downMoves r blocked =
+            if (not blocked) && (r <= 7) then
+               attacks <- attacks ||| (1UL <<< (r * 8 + targetFile))
+               downMoves (r + 1) (((1UL <<< (r * 8 + targetFile)) &&& blockers) <> 0UL)
+         downMoves (targetRank + 1) false
+
+         let rec upMoves r blocked =
+            if (not blocked) && (r >= 0) then
+               attacks <- attacks ||| (1UL <<< (r * 8 + targetFile))
+               upMoves (r - 1) (((1UL <<< (r * 8 + targetFile)) &&& blockers) <> 0UL)
+         upMoves (targetRank - 1) false
+
+         let rec rightMoves f blocked =
+            if (not blocked) && (f <= 7) then
+               attacks <- attacks ||| (1UL <<< (targetRank * 8 + f))
+               rightMoves (f + 1) (((1UL <<< (targetRank * 8 + f)) &&& blockers) <> 0UL)
+         rightMoves (targetFile + 1) false
+
+         let rec leftMoves f blocked =
+            if (not blocked) && (f >= 0) then
+               attacks <- attacks ||| (1UL <<< (targetRank * 8 + f))
+               leftMoves (f - 1) (((1UL <<< (targetRank * 8 + f)) &&& blockers) <> 0UL)
+         leftMoves (targetFile - 1) false
+         attacks
+
+      // rook attacks table [square]
+      member x.rookAttacks : BitBoardType[] = 
+         let mutable rookAttacks = Array.zeroCreate 64
+         for square = 0 to 63 do
+            rookAttacks[square] <- BitBoard.maskRookAttacks(enum<BoardSquare> square)
+         rookAttacks

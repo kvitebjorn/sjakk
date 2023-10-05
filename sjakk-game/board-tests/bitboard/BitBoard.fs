@@ -143,6 +143,12 @@ let CountBits () =
     Assert.AreEqual(4, fifteen.count)
 
 [<Test>]
+let GetLeastSignificantBitIndex () =
+    let blockers : BitBoardType = 0UL.set(int BoardSquare.d7).set(int BoardSquare.d2).set(int BoardSquare.d1).set(int BoardSquare.b4).set(int BoardSquare.g4)
+    let lsbIndex = blockers.getLeastSignificantBitIndex
+    Assert.AreEqual(BoardSquare.d7, BitBoard.indexToCoordinate(lsbIndex))
+
+[<Test>]
 let PrintEmptyBitboard() =
     let bitBoard = new BitBoard()
     Assert.AreEqual(0UL, bitBoard.bitboards[int Pieces.P])
@@ -196,15 +202,144 @@ let GenerateAllPawnAttacksBlack () =
 
 [<Test>]
 let GenerateMidBoardKnightAttacks () =
-    let knightAttacks = BitBoard.maskKnightAttacks(PlayerColor.white, BoardSquare.f3)
+    let knightAttacks = BitBoard.maskKnightAttacks(BoardSquare.f3)
     Assert.AreEqual(5802888705324613632UL, knightAttacks)
 
 [<Test>]
 let GenerateEdgeBoardKnightAttacks () =
-    let knightAttacks = BitBoard.maskKnightAttacks(PlayerColor.white, BoardSquare.h6)
+    let knightAttacks = BitBoard.maskKnightAttacks(BoardSquare.h6)
     Assert.AreEqual(275414786112L, knightAttacks)
 
 [<Test>]
 let GenerateCornerBoardKnightAttacks () =
-    let knightAttacks = BitBoard.maskKnightAttacks(PlayerColor.white, BoardSquare.a1)
+    let knightAttacks = BitBoard.maskKnightAttacks(BoardSquare.a1)
     Assert.AreEqual(1128098930098176L, knightAttacks)
+
+[<Test>]
+let GenerateCornerA1BoardKingAttacks () =
+    let kingAttacks = BitBoard.maskKingAttacks(BoardSquare.a1)
+    Assert.AreEqual(144959613005987840L, kingAttacks)
+
+[<Test>]
+let GenerateCornerA8BoardKingAttacks () =
+    let kingAttacks = BitBoard.maskKingAttacks(BoardSquare.a8)
+    Assert.AreEqual(770L, kingAttacks)
+
+[<Test>]
+let GenerateCornerH1BoardKingAttacks () =
+    let kingAttacks = BitBoard.maskKingAttacks(BoardSquare.h1)
+    Assert.AreEqual(4665729213955833856L, kingAttacks)
+
+[<Test>]
+let GenerateCornerH8BoardKingAttacks () =
+    let kingAttacks = BitBoard.maskKingAttacks(BoardSquare.h8)
+    Assert.AreEqual(49216L, kingAttacks)
+
+[<Test>]
+let GenerateMidBoardKingAttacks () =
+    let kingAttacks = BitBoard.maskKingAttacks(BoardSquare.d5)
+    Assert.AreEqual(120596463616L, kingAttacks)
+
+[<Test>]
+let GenerateMidBoardBishopAttacks () =
+    let bishopAttacks = BitBoard.maskBishopAttacks(BoardSquare.d4)
+    Assert.AreEqual(9592139778506752L, bishopAttacks)
+
+[<Test>]
+let GenerateCornerA1BoardBishopAttacks () =
+    let bishopAttacks = BitBoard.maskBishopAttacks(BoardSquare.a1)
+    Assert.AreEqual(567382630219776L, bishopAttacks)
+
+[<Test>]
+let GenerateCornerA8BoardBishopAttacks () =
+    let bishopAttacks = BitBoard.maskBishopAttacks(BoardSquare.a8)
+    Assert.AreEqual(18049651735527936L, bishopAttacks)
+
+[<Test>]
+let GenerateCornerH1BoardBishopAttacks () =
+    let bishopAttacks = BitBoard.maskBishopAttacks(BoardSquare.h1)
+    Assert.AreEqual(18049651735527936L, bishopAttacks)
+
+[<Test>]
+let GenerateCornerH8BoardBishopAttacks () =
+    let bishopAttacks = BitBoard.maskBishopAttacks(BoardSquare.h8)
+    Assert.AreEqual(567382630219776L, bishopAttacks)
+
+[<Test>]
+let GenerateEdgeA5BoardBishopAttacks () =
+    let bishopAttacks = BitBoard.maskBishopAttacks(BoardSquare.a5)
+    Assert.AreEqual(2256206450263040L, bishopAttacks)
+
+[<Test>]
+let GenerateEdgeC1BoardBishopAttacks () =
+    let bishopAttacks = BitBoard.maskBishopAttacks(BoardSquare.c1)
+    Assert.AreEqual(2832480465846272L, bishopAttacks)
+
+[<Test>]
+let GenerateEdgeE8BoardBishopAttacks () =
+    let bishopAttacks = BitBoard.maskBishopAttacks(BoardSquare.e8)
+    Assert.AreEqual(38021120L, bishopAttacks)
+
+[<Test>]
+let GenerateEdgeH3BoardBishopAttacks () =
+    let bishopAttacks = BitBoard.maskBishopAttacks(BoardSquare.h3)
+    Assert.AreEqual(18014673925310464L, bishopAttacks)
+
+[<Test>]
+let GenerateMidBoardRookAttacks () =
+    let rookAttacks = BitBoard.maskRookAttacks(BoardSquare.d5)
+    Assert.AreEqual(2260632246683648L, rookAttacks)
+
+[<Test>]
+let GenerateCornerA1BoardRookAttacks () =
+    let rookAttacks = BitBoard.maskRookAttacks(BoardSquare.a1)
+    Assert.AreEqual(9079539427579068672L, rookAttacks)
+
+[<Test>]
+let GenerateCornerA8BoardRookAttacks () =
+    let rookAttacks = BitBoard.maskRookAttacks(BoardSquare.a8)
+    Assert.AreEqual(282578800148862L, rookAttacks)
+
+[<Test>]
+let GenerateCornerH1BoardRookAttacks () =
+    let rookAttacks = BitBoard.maskRookAttacks(BoardSquare.h1)
+    Assert.AreEqual(9115426935197958144L, rookAttacks)
+
+[<Test>]
+let GenerateCornerH8BoardRookAttacks () =
+    let rookAttacks = BitBoard.maskRookAttacks(BoardSquare.h8)
+    Assert.AreEqual(36170086419038334L, rookAttacks)
+
+[<Test>]
+let GenerateEdgeA4BoardRookAttacks () =
+    let rookAttacks = BitBoard.maskRookAttacks(BoardSquare.a4)
+    Assert.AreEqual(283115671060736L, rookAttacks)
+
+[<Test>]
+let GenerateEdgeF1BoardRookAttacks () =
+    let rookAttacks = BitBoard.maskRookAttacks(BoardSquare.f1)
+    Assert.AreEqual(6782456361169985536L, rookAttacks)
+
+[<Test>]
+let GenerateEdgeG8BoardRookAttacks () =
+    let rookAttacks = BitBoard.maskRookAttacks(BoardSquare.g8)
+    Assert.AreEqual(18085043209519166L, rookAttacks)
+
+[<Test>]
+let GenerateEdgeH2BoardRookAttacks () =
+    let rookAttacks = BitBoard.maskRookAttacks(BoardSquare.h2)
+    Assert.AreEqual(35607136465616896L, rookAttacks)
+
+[<Test>]
+let GenerateBishopAttacksOnTheFly () =
+    let blockers : BitBoardType = 0UL.set(int BoardSquare.b6).set(int BoardSquare.g7).set(int BoardSquare.e3).set(int BoardSquare.b2)
+    let bishopAttacks = BitBoard.bishopAttacksOnTheFly(BoardSquare.d4, blockers)
+    Assert.AreEqual(584940523765760L, bishopAttacks)
+
+[<Test>]
+let GenerateRookAttacksOnTheFly () =
+    let blockers : BitBoardType = 0UL.set(int BoardSquare.b4).set(int BoardSquare.h4).set(int BoardSquare.d2).set(int BoardSquare.d7)
+    let rookAttacks = BitBoard.rookAttacksOnTheFly(BoardSquare.d4, blockers)
+    Assert.AreEqual(2261652603406336L, rookAttacks)
+
+// TODO: need tests for empty blockers for on-the-fly functions
